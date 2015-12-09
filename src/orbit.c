@@ -210,6 +210,25 @@ orbita_orbit_free(struct orbita_orbit * orb)
   return 0;
 }
 
+double
+orbita_orbit_length(struct orbita_orbit * orb)
+{
+  int I_pts, N_pts = orb -> N_pts;
+  double L_t = 0, * pts = orb -> pts;
+  size_t id_w0, id_w1;
+
+  #ifndef Sq
+  #define Sq(X) ((X) * (X))
+
+  for(I_pts = 1; I_pts< N_pts; ++ I_pts)
+    id_w0 = 6 * (I_pts - 1), id_w1 = 6 * I_pts,
+    L_t += sqrt(Sq(pts[id_w1 + 0] - pts[id_w0 + 0])
+              + Sq(pts[id_w1 + 1] - pts[id_w0 + 1])
+              + Sq(pts[id_w1 + 2] - pts[id_w0 + 2]));
+
+  return L_t;
+}
+
 int
 orbita_orbit_print(struct orbita_orbit * orb)
 {

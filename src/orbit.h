@@ -56,6 +56,8 @@ orbita_orbit_integrate_with_analyzer_noalloc(struct orbita_orbit * orb,
 
 int orbita_orbit_free(struct orbita_orbit *);
 
+double orbita_orbit_length(struct orbita_orbit *)
+
 int orbita_orbit_print(struct orbita_orbit *);
 int orbita_orbit_savetxt(struct orbita_orbit *, const char *);
 int orbita_orbit_savestdf4(struct orbita_orbit *, const char *);

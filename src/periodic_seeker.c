@@ -341,12 +341,12 @@ orbita_analyzer_planar_periodic_seeker_pos(double R,
 /* quick fox jumps over a lazy dog */
 
 int
-_orbita_analyzer_planar_periodic_ranger_pos_peek(void * wspac,
+_orbita_analyzer_planar_periodic_scanner_pos_peek(void * wspac,
     double * pt, int * i_pt, const int N_pts)
 {
   // unpack the workspace
-  struct _orbita_analyzer_planar_periodic_ranger_pos_wspac * ws =
-    (struct _orbita_analyzer_planar_periodic_ranger_pos_wspac *) wspac;
+  struct _orbita_analyzer_planar_periodic_scanner_pos_wspac * ws =
+    (struct _orbita_analyzer_planar_periodic_scanner_pos_wspac *) wspac;
 
   // first run, go make initial condition directly
   if((ws -> is_init) ++ == 0) goto Make_init;
@@ -382,9 +382,6 @@ _orbita_analyzer_planar_periodic_ranger_pos_peek(void * wspac,
              + Sq(pys) + Sq((ws -> V)[ws -> I_pt] - pxs));
   (ws -> D)[ws -> I_pt] = d_t;
 
-  // DBG
-  //printf("%f %f\n", (ws -> V)[ws -> I_pt], d_t);
-
   // go to the next point
   ++ (ws -> I_pt);
   if(ws -> I_pt == ws -> N_pts) return 1;
@@ -403,11 +400,11 @@ _orbita_analyzer_planar_periodic_ranger_pos_peek(void * wspac,
 }
 
 int
-_orbita_analyzer_planar_periodic_ranger_pos_kill(
+_orbita_analyzer_planar_periodic_scanner_pos_kill(
     struct orbita_analyzer * wat)
 {
-  struct _orbita_analyzer_planar_periodic_ranger_pos_wspac * ws =
-    (struct _orbita_analyzer_planar_periodic_ranger_pos_wspac *)
+  struct _orbita_analyzer_planar_periodic_scanner_pos_wspac * ws =
+    (struct _orbita_analyzer_planar_periodic_scanner_pos_wspac *)
     (wat -> wspac);
 
   free(ws -> V), free(ws -> D);
@@ -423,9 +420,9 @@ orbita_analyzer_planar_periodic_ranger_pos(double R, double V_a,
   struct orbita_analyzer * wat =
     (struct orbita_analyzer *) malloc(sizeof(struct orbita_analyzer));
 
-  struct _orbita_analyzer_planar_periodic_ranger_pos_wspac * ws =
-  (struct _orbita_analyzer_planar_periodic_ranger_pos_wspac *)
-  malloc(sizeof(struct _orbita_analyzer_planar_periodic_ranger_pos_wspac));
+  struct _orbita_analyzer_planar_periodic_scanner_pos_wspac * ws =
+  (struct _orbita_analyzer_planar_periodic_scanner_pos_wspac *)
+  malloc(sizeof(struct _orbita_analyzer_planar_periodic_scanner_pos_wspac));
   wat -> wspac = (void *) ws;
 
   ws -> I_turn = 0, ws -> N_turn = N_turn,
@@ -446,18 +443,18 @@ orbita_analyzer_planar_periodic_ranger_pos(double R, double V_a,
   wat -> N_analyzers = 0,
   wat -> group = NULL;
 
-  wat -> peek = _orbita_analyzer_planar_periodic_ranger_pos_peek,
-  wat -> kill = _orbita_analyzer_planar_periodic_ranger_pos_kill;
+  wat -> peek = _orbita_analyzer_planar_periodic_scanner_pos_peek,
+  wat -> kill = _orbita_analyzer_planar_periodic_scanner_pos_kill;
 
   return wat;
 }
 
 int
-orbita_analyzer_planar_periodic_ranger_pos_get(
+orbita_analyzer_planar_periodic_scanner_pos_get(
     struct orbita_analyzer * wat, double * V, double * D)
 {
-  struct _orbita_analyzer_planar_periodic_ranger_pos_wspac * ws =
-    (struct _orbita_analyzer_planar_periodic_ranger_pos_wspac *)
+  struct _orbita_analyzer_planar_periodic_scanner_pos_wspac * ws =
+    (struct _orbita_analyzer_planar_periodic_scanner_pos_wspac *)
     (wat -> wspac);
 
   // copy results
@@ -467,15 +464,13 @@ orbita_analyzer_planar_periodic_ranger_pos_get(
   return ws -> N_pts;
 }
 
-/* Meow, meow, meow, meow, meow... */
-
 int
-_orbita_analyzer_planar_periodic_ranger_EJ_peek(void * wspac,
+_orbita_analyzer_planar_periodic_scanner_EJ_peek(void * wspac,
     double * pt, int * i_pt, const int N_pts)
 {
   // unpack the workspace
-  struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac * ws =
-    (struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac *) wspac;
+  struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac * ws =
+    (struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac *) wspac;
 
   // first run, go make initial condition directly
   if((ws -> is_init) ++ == 0) goto Make_init;
@@ -483,11 +478,6 @@ _orbita_analyzer_planar_periodic_ranger_EJ_peek(void * wspac,
   // this point and (already integrated) next point
   size_t w0_idx = 6 * (* i_pt),
          w1_idx = 6 * (* i_pt + 1);
-
-  //printf("%f %f %f %f %f %f\n", pt[w0_idx], pt[w0_idx + 1],
-  //  pt[w0_idx + 2], pt[w0_idx + 3], pt[w0_idx + 4], pt[w0_idx + 5]);
-
-  //orbita_dbg("at A: I_pt = %u", ws -> I_pt);
 
   // if fly away, re-make initial condition
   double rsq_t = Sq(pt[w0_idx]) + Sq(pt[w0_idx + 1]) + Sq(pt[w0_idx + 2]);
@@ -516,8 +506,6 @@ _orbita_analyzer_planar_periodic_ranger_EJ_peek(void * wspac,
     pxs = (1. - h) * pt[w0_idx + 3]  + h * pt[w1_idx + 3],
     pys = (1. - h) * pt[w0_idx + 4]  + h * pt[w1_idx + 4];
 
-  //orbita_dbg("at B: I_pt = %u", ws -> I_pt);
-
   // Find the phase space distance
   double d_t = sqrt(Sq((ws -> R)[ws -> I_pt] - ys)
              + Sq(pys) + Sq((ws -> V_t) - pxs));
@@ -529,8 +517,6 @@ _orbita_analyzer_planar_periodic_ranger_EJ_peek(void * wspac,
   ++ (ws -> I_pt);
   if(ws -> I_pt >= ws -> N_pts) return 1;
 
-  //orbita_dbg("at D: I_pt = %u", ws -> I_pt);
-
   Make_init:;
 
   double V_t;
@@ -538,38 +524,28 @@ _orbita_analyzer_planar_periodic_ranger_EJ_peek(void * wspac,
   for(;;)
     {
       if((ws -> I_pt) >= (ws -> N_pts)) return 1;
-  //orbita_dbg("at E: I_pt = %u", ws -> I_pt);
       V_t = _pseeker_x_vphi(ws -> psi, ws -> E_J,
             ws -> omega_sq, (ws -> R)[ws -> I_pt]);
-  //orbita_dbg("at F: I_pt = %u", ws -> I_pt);
       if(!isnan(V_t)) break;
       else (ws -> D)[(ws -> I_pt) ++] = sqrt(-1.);
-  //orbita_dbg("at G: I_pt = %u", ws -> I_pt);
-      //orbita_dbg("Energy not allowed");
-      //if((ws -> I_pt) >= (ws -> N_pts)) return 1;
-  //orbita_dbg("at H: I_pt = %u", ws -> I_pt);
     }
 
-  //orbita_dbg("at I: I_pt = %u", ws -> I_pt);
   // set initial condition
   pt[0] = 0., pt[1] = (ws -> R)[ws -> I_pt], pt[2] = 0.,
   pt[3] = V_t, pt[4] = 0., pt[5] = 0.;
 
   ws -> V_t = V_t;
-
   ws -> I_turn = 0, * i_pt = -1;
-
-  //orbita_dbg("V_t = %f", V_t);
 
   return 0;
 }
 
 int
-_orbita_analyzer_planar_periodic_ranger_EJ_kill(
+_orbita_analyzer_planar_periodic_scanner_EJ_kill(
     struct orbita_analyzer * wat)
 {
-  struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac * ws =
-    (struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac *) (wat -> wspac);
+  struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac * ws =
+    (struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac *) (wat -> wspac);
 
   free(ws -> R), free(ws -> D);
   free(wat -> wspac);
@@ -578,16 +554,16 @@ _orbita_analyzer_planar_periodic_ranger_EJ_kill(
 }
 
 struct orbita_analyzer *
-orbita_analyzer_planar_periodic_ranger_EJ(struct orbita_potential * psi,
+orbita_analyzer_planar_periodic_scanner_EJ(struct orbita_potential * psi,
     double omega, double E_J, double R_a, double R_b, double r_max,
     int N_pts, int N_turn)
 {
   struct orbita_analyzer * wat =
     (struct orbita_analyzer *) malloc(sizeof(struct orbita_analyzer));
 
-  struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac * ws =
-  (struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac *)
-  malloc(sizeof(struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac));
+  struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac * ws =
+  (struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac *)
+  malloc(sizeof(struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac));
   wat -> wspac = (void *) ws;
 
   ws -> I_turn = 0, ws -> N_turn = N_turn,
@@ -610,21 +586,19 @@ orbita_analyzer_planar_periodic_ranger_EJ(struct orbita_potential * psi,
   wat -> N_analyzers = 0,
   wat -> group = NULL;
 
-  wat -> peek = _orbita_analyzer_planar_periodic_ranger_EJ_peek,
-  wat -> kill = _orbita_analyzer_planar_periodic_ranger_EJ_kill;
+  wat -> peek = _orbita_analyzer_planar_periodic_scanner_EJ_peek,
+  wat -> kill = _orbita_analyzer_planar_periodic_scanner_EJ_kill;
 
   return wat;
 }
 
 int
-orbita_analyzer_planar_periodic_ranger_EJ_get(
+orbita_analyzer_planar_periodic_scanner_EJ_get(
     struct orbita_analyzer * wat, double * R, double * D)
 {
-  struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac * ws =
-    (struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac *)
+  struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac * ws =
+    (struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac *)
     (wat -> wspac);
-
-  //orbita_dbg("Called.");
 
   // copy results
   memcpy(R, ws -> R, sizeof(double) * (ws -> N_pts)),

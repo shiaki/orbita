@@ -37,7 +37,7 @@ struct _orbita_analyzer_planar_periodic_seeker_pos_wspac
   double d_a, d_c, d_d, d_b;
 };
 
-struct _orbita_analyzer_planar_periodic_ranger_pos_wspac
+struct _orbita_analyzer_planar_periodic_scanner_pos_wspac
 {
   int N_pts;
   int I_pt;
@@ -49,7 +49,7 @@ struct _orbita_analyzer_planar_periodic_ranger_pos_wspac
   double * V, * D;
 };
 
-struct _orbita_analyzer_planar_periodic_ranger_EJ_wspac
+struct _orbita_analyzer_planar_periodic_scanner_EJ_wspac
 {
   int N_pts;
   int I_pt;
@@ -90,18 +90,18 @@ orbita_analyzer_planar_periodic_seeker_pos(double R,
   double V_a, double V_b, int pos_vel, int N_iter, int N_turn);
 
 struct orbita_analyzer *
-orbita_analyzer_planar_periodic_ranger_EJ(struct orbita_potential * psi,
+orbita_analyzer_planar_periodic_scanner_EJ(struct orbita_potential * psi,
     double omega, double E_J, double R_a, double R_b, double r_max,
     int N_pts, int N_turn);
 
 struct orbita_analyzer *
-orbita_analyzer_planar_periodic_ranger_pos(double R, double V_a,
+orbita_analyzer_planar_periodic_scanner_pos(double R, double V_a,
     double V_b, int N_pts, int N_turn);
 
-int orbita_analyzer_planar_periodic_ranger_pos_get(
+int orbita_analyzer_planar_periodic_scanner_pos_get(
     struct orbita_analyzer * wat, double * V, double * D);
 
-int orbita_analyzer_planar_periodic_ranger_EJ_get(
+int orbita_analyzer_planar_periodic_scanner_EJ_get(
     struct orbita_analyzer * wat, double * R, double * D);
 
 double orbita_analyzer_stopwatch_get_D(struct orbita_analyzer * wat);
