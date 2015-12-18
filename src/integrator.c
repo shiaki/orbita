@@ -117,3 +117,11 @@ orbita_integrator_optimize_timestep(struct orbita_potential *  psi,
 
   return 0;
 }
+
+int
+orbita_integrator_update_timestep(struct orbita_integrator * intgr,
+                                  double delta_t)
+{
+  intgr -> delta_t = delta_t;
+  return 0;
+}

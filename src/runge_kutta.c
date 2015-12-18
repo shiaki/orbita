@@ -114,8 +114,8 @@ orbita_integrator_runge_kutta_4_rot_step(void *                     wspace,
 
   // k1 = f(ti, wi)
   stat = orbita_potential_evaluate_force(psi, wi, t, k1 + 3);
-  k1[3] -= 2. * omega * wi[4] - wp_sq * wi[0],
-  k1[4] += 2. * omega * wi[3] + wp_sq * wi[1];
+  k1[3] += 2. * omega * wi[4] + wp_sq * wi[0],
+  k1[4] -= 2. * omega * wi[3] - wp_sq * wi[1];
   for(it = 0; it < 3; ++ it) k1[it] = wi[it + 3];
 
   //orbita_dbg("%.6f, %.6f, %.6f, %.6f, %.6f, %.6f", k1[0], k1[1], k1[2], k1[3], k1[4], k1[5]);
@@ -123,22 +123,22 @@ orbita_integrator_runge_kutta_4_rot_step(void *                     wspace,
   // k2 = f(ti + 0.5 dt, wi + 0.5 * dt * k1)
   for(it = 0; it < 6; ++ it) p2[it] = wi[it] + 0.5 * dt * k1[it];
   stat = orbita_potential_evaluate_force(psi, p2, t + 0.5 * dt, k2 + 3);
-  k2[3] -= 2. * omega * p2[4] - wp_sq * p2[0],
-  k2[4] += 2. * omega * p2[3] + wp_sq * p2[1];
+  k2[3] += 2. * omega * p2[4] + wp_sq * p2[0],
+  k2[4] -= 2. * omega * p2[3] - wp_sq * p2[1];
   for(it = 0; it < 3; ++ it) k2[it] = p2[it + 3];
 
   // k3 = f(ti + 0.5 dt, wi + 0.5 * dt * k2)
   for(it = 0; it < 6; ++ it) p3[it] = wi[it] + 0.5 * dt * k2[it];
   stat = orbita_potential_evaluate_force(psi, p3, t + 0.5 * dt, k3 + 3);
-  k3[3] -= 2. * omega * p3[4] - wp_sq * p3[0],
-  k3[4] += 2. * omega * p3[3] + wp_sq * p3[1];
+  k3[3] += 2. * omega * p3[4] + wp_sq * p3[0],
+  k3[4] -= 2. * omega * p3[3] - wp_sq * p3[1];
   for(it = 0; it < 3; ++ it) k3[it] = p3[it + 3];
 
   // k4 = f(ti + dt, wi + dt * h3)
   for(it = 0; it < 6; ++ it) p4[it] = wi[it] + dt * k3[it];
   stat = orbita_potential_evaluate_force(psi, p4, t + dt, k4 + 3);
-  k4[3] -= 2. * omega * p4[4] - wp_sq * p4[0],
-  k4[4] += 2. * omega * p4[3] + wp_sq * p4[1];
+  k4[3] += 2. * omega * p4[4] + wp_sq * p4[0],
+  k4[4] -= 2. * omega * p4[3] - wp_sq * p4[1];
   for(it = 0; it < 3; ++ it) k4[it] = p4[it + 3];
 
   // wf = wi + (1/6)(k1 + 2 k2 + 2 k3 + k4)
@@ -204,3 +204,5 @@ orbita_integrator_runge_kutta_4_rot_init(double dt, double omega)
 
   return intgr;
 }
+
+

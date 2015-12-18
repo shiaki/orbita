@@ -28,7 +28,7 @@ Integrators in *orbita* are also modularized. Currently only 4th order Runge-Kut
 ## Dependencies
 
 [GSL](http://www.gnu.org/software/gsl/) v1.8 or later
-Required in: evaluating special functions in some potentials, finding periodic orbits using minimization.
+Required in: evaluating special functions in some potentials, finding periodic orbits using minimization and root-finding.
 
 ## Status
 

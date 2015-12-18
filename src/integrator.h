@@ -51,5 +51,8 @@ int orbita_integrator_free(struct orbita_integrator * intgr);
 int orbita_integrator_optimize_timestep(struct orbita_potential *,
     struct orbita_integrator *, struct orbita_orbit *, double *, double);
 
+int orbita_integrator_update_timestep(struct orbita_integrator * intgr,
+    double delta_t);
+
 #define ORBITA_INTEGRATOR_H
 #endif
